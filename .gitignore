@@ -1,0 +1,17 @@
+# Dependencias
+node_modules/
+
+# Build de Vite
+dist/
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# Editor y sistema
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

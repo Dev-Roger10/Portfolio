@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  /* Todos los colores salen de las variables --t-* del tema activo
+     (ver src/workspace/themes.ts). Los valores por defecto de abajo son
+     Tokyo Night, para que la página se vea bien incluso antes del JS. */
+  --color-ink-950: var(--t-bg);
+  --color-ink-900: var(--t-panel);
+  --color-ink-800: var(--t-elevated);
+  --color-ink-700: var(--t-surface);
+  --color-ink-600: var(--t-line);
+  --color-ink-500: var(--t-muted);
+
+  /* En claro --t-hi es oscuro, así que los tonos "más brillantes" se oscurecen y siguen legibles. */
+  --color-white: var(--t-hi);
+  --color-accent-300: color-mix(in oklab, var(--t-accent) 60%, var(--t-hi));
+  --color-accent-400: color-mix(in oklab, var(--t-accent) 82%, var(--t-hi));
+  --color-accent-500: var(--t-accent);
+  --color-accent-600: color-mix(in oklab, var(--t-accent) 82%, black);
+  --color-on-accent: var(--t-on-accent);
+
+  --color-mint-400: var(--t-secondary);
+  --color-steel-400: var(--t-number);
+  --color-danger: var(--t-danger);
+
+  /* Resaltado de sintaxis (consola SQL y terminal). */
+  --color-syn-keyword: var(--t-keyword);
+  --color-syn-string: var(--t-string);
+  --color-syn-number: var(--t-number);
+  --color-syn-fn: var(--t-fn);
+  --color-syn-comment: var(--t-comment);
+
+  --color-chart-1: var(--t-chart-1);
+  --color-chart-2: var(--t-chart-2);
+  --color-chart-3: var(--t-chart-3);
+  --color-chart-4: var(--t-chart-4);
+  --color-chart-5: var(--t-chart-5);
+  --color-chart-6: var(--t-chart-6);
+
+  /* La escala de grises de texto sigue al tema (los textos zinc-* toman su tinte). */
+  --color-zinc-100: color-mix(in oklab, var(--t-fg) 70%, var(--t-hi));
+  --color-zinc-200: var(--t-fg);
+  --color-zinc-300: color-mix(in oklab, var(--t-fg) 55%, var(--t-fg-dim));
+  --color-zinc-400: var(--t-fg-dim);
+  --color-zinc-500: color-mix(in oklab, var(--t-fg-dim) 55%, var(--t-comment));
+  --color-zinc-600: var(--t-comment);
+
+}
+
+:root {
+  --t-bg: #1a1b26;
+  --t-panel: #16161e;
+  --t-elevated: #1f2335;
+  --t-surface: #292e42;
+  --t-line: #3b4261;
+  --t-muted: #545c7e;
+  --t-fg: #c0caf5;
+  --t-fg-dim: #a9b1d6;
+  --t-comment: #565f89;
+  --t-accent: #7aa2f7;
+  --t-on-accent: #16161e;
+  --t-secondary: #73daca;
+  --t-danger: #f7768e;
+  --t-keyword: #bb9af7;
+  --t-string: #9ece6a;
+  --t-number: #ff9e64;
+  --t-fn: #7dcfff;
+  --t-chart-1: #7aa2f7;
+  --t-chart-2: #73daca;
+  --t-chart-3: #bb9af7;
+  --t-chart-4: #e0af68;
+  --t-chart-5: #f7768e;
+  --t-chart-6: #9ece6a;
+  --t-hi: #ffffff;
+}
+
+* {
+  scrollbar-color: var(--color-accent-600) transparent;
+}
+
+html {
+  /* Evita el scroll horizontal en celular cuando algo se sale del viewport.
+     Va en <html> porque es el que reporta el ancho de scroll del documento. */
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-ink-950);
+  color: var(--t-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+textarea,
+input,
+select {
+  font-family: inherit;
+}
+
+/* Con "reducir movimiento" activado en el sistema, las animaciones y
+   transiciones quedan prácticamente instantáneas. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--color-accent-500);
+  color: var(--color-ink-950);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Borde con un hilo del acento: para las ventanas destacadas. */
+.panel-featured {
+  border-color: color-mix(in srgb, var(--t-accent) 30%, transparent);
+}
+
+/* Cursor de bloque parpadeante (bienvenida.md). */
+.cursor-blink {
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Ventana con su propio tema (el terminal siempre es Kali). Vuelve a declarar los
+   tokens para que var(--t-*) se resuelva aquí y no en :root. */
+.theme-scope {
+  --color-ink-950: var(--t-bg);
+  --color-ink-900: var(--t-panel);
+  --color-ink-800: var(--t-elevated);
+  --color-ink-700: var(--t-surface);
+  --color-ink-600: var(--t-line);
+  --color-ink-500: var(--t-muted);
+  --color-white: var(--t-hi);
+  --color-accent-300: color-mix(in oklab, var(--t-accent) 60%, var(--t-hi));
+  --color-accent-400: color-mix(in oklab, var(--t-accent) 82%, var(--t-hi));
+  --color-accent-500: var(--t-accent);
+  --color-accent-600: color-mix(in oklab, var(--t-accent) 82%, black);
+  --color-on-accent: var(--t-on-accent);
+  --color-mint-400: var(--t-secondary);
+  --color-steel-400: var(--t-number);
+  --color-danger: var(--t-danger);
+  --color-syn-keyword: var(--t-keyword);
+  --color-syn-string: var(--t-string);
+  --color-syn-number: var(--t-number);
+  --color-syn-fn: var(--t-fn);
+  --color-syn-comment: var(--t-comment);
+  --color-chart-1: var(--t-chart-1);
+  --color-chart-2: var(--t-chart-2);
+  --color-chart-3: var(--t-chart-3);
+  --color-chart-4: var(--t-chart-4);
+  --color-chart-5: var(--t-chart-5);
+  --color-chart-6: var(--t-chart-6);
+  --color-zinc-100: color-mix(in oklab, var(--t-fg) 70%, var(--t-hi));
+  --color-zinc-200: var(--t-fg);
+  --color-zinc-300: color-mix(in oklab, var(--t-fg) 55%, var(--t-fg-dim));
+  --color-zinc-400: var(--t-fg-dim);
+  --color-zinc-500: color-mix(in oklab, var(--t-fg-dim) 55%, var(--t-comment));
+  --color-zinc-600: var(--t-comment);
+  color: var(--t-fg);
+}
+
+/* Al pasar el cursor, un arco rojo recorre el marco de la tarjeta. Si la tarjeta está
+   seleccionada (aria-pressed), el arco es azul y gira siempre. */
+@property --orbit-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.border-orbit {
+  --orbit-color: var(--t-danger);
+  position: relative;
+}
+
+.border-orbit[aria-pressed="true"] {
+  --orbit-color: color-mix(in oklab, var(--t-accent) 60%, var(--t-hi));
+}
+
+.border-orbit::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--orbit-angle), transparent 0 55%, color-mix(in srgb, var(--orbit-color) 95%, transparent) 82%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  animation: orbit-spin 2.2s linear infinite;
+}
+
+.border-orbit:hover::before,
+.border-orbit:focus-visible::before,
+.border-orbit[aria-pressed="true"]::before {
+  opacity: 1;
+}
+
+@keyframes orbit-spin {
+  to {
+    --orbit-angle: 360deg;
+  }
+}
